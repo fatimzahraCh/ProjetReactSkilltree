@@ -1,0 +1,144 @@
+.parcours-page {
+  height: 100vh; width: 100vw;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+}
+
+.parcours-content {
+  flex: 1; overflow-y: auto;
+  display: flex; flex-direction: column;
+  align-items: center;
+  padding: 40px 24px;
+}
+
+.parcours-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.parcours-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0 0 32px;
+}
+
+.parcours-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 900px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.parcours-grid--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes cardPopIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.parcours-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  animation: cardPopIn 0.45s ease both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: default;
+}
+
+.parcours-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.parcours-card-emoji {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.parcours-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.parcours-card-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.parcours-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.parcours-card-xp {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.parcours-card-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--success);
+  background: var(--success-bg);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.parcours-empty {
+  text-align: center;
+  padding: 60px 20px;
+  max-width: 400px;
+}
+
+.parcours-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.parcours-empty p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0 0 24px;
+  line-height: 1.6;
+}
+
+.parcours-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--transition);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  cursor: pointer;
+}
+.parcours-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,0.3); }

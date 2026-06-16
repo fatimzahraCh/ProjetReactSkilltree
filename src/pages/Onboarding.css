@@ -1,0 +1,205 @@
+.onboarding-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.onboarding-page::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 70% 60%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+  animation: fadeIn 1.5s ease-out;
+}
+
+.onboarding-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.onboarding-card {
+  background: rgba(255, 255, 255, 0.98);
+  color: var(--text);
+  padding: 48px 40px;
+  border-radius: var(--radius-lg);
+  width: 480px;
+  max-width: 92vw;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 1;
+  animation: slideUp 0.6s ease-out;
+  backdrop-filter: blur(20px);
+}
+
+.onboarding-logo {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.onboarding-logo-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.onboarding-title {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  background: linear-gradient(135deg, var(--text), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.onboarding-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  margin: 0 0 32px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.onboarding-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.onboarding-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.onboarding-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.onboarding-label-icon {
+  font-size: 1rem;
+}
+
+.onboarding-input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.onboarding-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+.onboarding-input::placeholder {
+  color: var(--text-muted);
+}
+
+.onboarding-submit {
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 8px;
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.onboarding-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.onboarding-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.onboarding-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.onboarding-submit-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.onboarding-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.onboarding-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-light);
+}
+
+.onboarding-feature {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.onboarding-feature-icon {
+  font-size: 1.2rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.onboarding-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}

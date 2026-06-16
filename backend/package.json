@@ -1,0 +1,16 @@
+{
+  "name": "synapse-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^11.7.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "uuid": "^10.0.0"
+  }
+}
