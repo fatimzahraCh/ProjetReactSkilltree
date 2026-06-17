@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import './Quiz.css';
 
 export interface Question {
@@ -14,20 +14,20 @@ interface QuizProps {
 }
 
 const CORRECT_REACTIONS = [
-  { emoji: '🎉', text: 'Bravo ! C\'est exact !' },
-  { emoji: '🌟', text: 'Parfait ! Tu gères !' },
-  { emoji: '🔥', text: 'En pleine forme !' },
-  { emoji: '💪', text: 'Continue comme ça !' },
-  { emoji: '✨', text: 'Impeccable !' },
-  { emoji: '🏆', text: 'Champion !' },
+  { emoji: '­ƒÄë', text: 'Bravo ! C\'est exact !' },
+  { emoji: '­ƒîƒ', text: 'Parfait ! Tu g├¿res !' },
+  { emoji: '­ƒöÑ', text: 'En pleine forme !' },
+  { emoji: '­ƒÆ¬', text: 'Continue comme ├ºa !' },
+  { emoji: 'Ô£¿', text: 'Impeccable !' },
+  { emoji: '­ƒÅå', text: 'Champion !' },
 ];
 
 const INCORRECT_REACTIONS = [
-  { emoji: '💥', text: 'Oups ! Pas cette fois.' },
-  { emoji: '🤔', text: 'Presque ! Réessaie.' },
-  { emoji: '💡', text: 'Pas tout à fait...' },
-  { emoji: '🧐', text: 'Raté ! Mais tu apprends.' },
-  { emoji: '📚', text: 'Petite erreur, ça arrive.' },
+  { emoji: '­ƒÆÑ', text: 'Oups ! Pas cette fois.' },
+  { emoji: '­ƒñö', text: 'Presque ! R├®essaie.' },
+  { emoji: '­ƒÆí', text: 'Pas tout ├á fait...' },
+  { emoji: '­ƒºÉ', text: 'Rat├® ! Mais tu apprends.' },
+  { emoji: '­ƒôÜ', text: 'Petite erreur, ├ºa arrive.' },
 ];
 
 function pick<T>(arr: T[], seed: number): T {
@@ -111,10 +111,10 @@ export default function Quiz({ questions, onSuccess, onFail }: QuizProps) {
             <span className="quiz-option-letter">{String.fromCharCode(65 + index)}</span>
             <span className="quiz-option-text">{option}</span>
             {showFeedback && index === questions[currentQuestion].correctIndex && (
-              <span className="quiz-option-icon">✅</span>
+              <span className="quiz-option-icon">Ô£à</span>
             )}
             {showFeedback && index === selectedAnswer && index !== questions[currentQuestion].correctIndex && (
-              <span className="quiz-option-icon">❌</span>
+              <span className="quiz-option-icon">ÔØî</span>
             )}
           </button>
         ))}

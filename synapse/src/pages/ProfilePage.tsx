@@ -31,14 +31,14 @@ export default function ProfilePage() {
   const handleUpdateName = async () => {
     setError(null); setSuccess(null);
     const err = await updateProfile({ name, darkMode });
-    if (err) setError(err); else setSuccess('Nom mis ├á jour !');
+    if (err) setError(err); else setSuccess('Nom mis à jour !');
   };
 
   const handleUpdatePassword = async () => {
     setError(null); setSuccess(null);
     if (!currentPassword || !newPassword) { setError('Remplis les deux champs.'); return; }
     const err = await updateProfile({ currentPassword, newPassword });
-    if (err) setError(err); else { setSuccess('Mot de passe mis ├á jour !'); setCurrentPassword(''); setNewPassword(''); }
+    if (err) setError(err); else { setSuccess('Mot de passe mis à jour !'); setCurrentPassword(''); setNewPassword(''); }
   };
 
   const dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
@@ -55,7 +55,7 @@ export default function ProfilePage() {
       <div className="profile-content">
         <div className="profile-grid">
           <div className="profile-card">
-            <h2 className="profile-card-title">­ƒæñ Profil</h2>
+            <h2 className="profile-card-title">Profil</h2>
             {error && <div className="profile-error">{error}</div>}
             {success && <div className="profile-success">{success}</div>}
             <div className="profile-field">
@@ -70,7 +70,7 @@ export default function ProfilePage() {
           </div>
 
           <div className="profile-card">
-            <h2 className="profile-card-title">­ƒöÆ Mot de passe</h2>
+            <h2 className="profile-card-title">Mot de passe</h2>
             <div className="profile-field">
               <label className="profile-label">Mot de passe actuel</label>
               <input className="profile-input" type="password" value={currentPassword} onChange={e => setCurrentPassword(e.target.value)} />
@@ -85,22 +85,22 @@ export default function ProfilePage() {
           {stats && (
             <>
               <div className="profile-card">
-                <h2 className="profile-card-title">­ƒôè Statistiques</h2>
+                <h2 className="profile-card-title">Statistiques</h2>
                 <div className="stats-grid">
-                  <div className="stat-box"><div className="stat-value">{stats.percentage}%</div><div className="stat-label">Compl├®t├®</div></div>
-                  <div className="stat-box"><div className="stat-value">{stats.completedSkills}/{stats.totalSkills}</div><div className="stat-label">Comp├®tences</div></div>
-                  <div className="stat-box"><div className="stat-value">{stats.xp}</div><div className="stat-label">XP Total</div></div>
+                  <div className="stat-box"><div className="stat-value">{stats.percentage}%</div><div className="stat-label">Complété</div></div>
+                  <div className="stat-box"><div className="stat-value">{stats.completedSkills}/{stats.totalSkills}</div><div className="stat-label">Compétences</div></div>
+                  <div className="stat-box"><div className="stat-value">{stats.xp}</div><div className="stat-label">XP total</div></div>
                   <div className="stat-box"><div className="stat-value">{stats.unlockedSkills}</div><div className="stat-label">Disponibles</div></div>
                 </div>
               </div>
 
               <div className="profile-card">
-                <h2 className="profile-card-title">­ƒöÑ Streak</h2>
+                <h2 className="profile-card-title">Streak</h2>
                 <div className="streak-box">
-                  <div className="streak-icon">­ƒöÑ</div>
+                  <div className="streak-icon">🔥</div>
                   <div className="streak-info">
-                    <h3>{stats.streakCount} jour{stats.streakCount > 1 ? 's' : ''} cons├®cutif{stats.streakCount > 1 ? 's' : ''}</h3>
-                    <p>Connecte-toi chaque jour pour maintenir ta s├®rie !</p>
+                    <h3>{stats.streakCount} jour{stats.streakCount > 1 ? 's' : ''} consécutif{stats.streakCount > 1 ? 's' : ''}</h3>
+                    <p>Connecte-toi chaque jour pour maintenir ta série !</p>
                   </div>
                 </div>
                 <div className="activity-row">
@@ -120,8 +120,8 @@ export default function ProfilePage() {
           )}
 
           <div className="profile-card profile-card--full" style={{ display: 'flex', gap: 12 }}>
-            <button className="profile-btn" onClick={() => navigate('/dashboard')}>­ƒî│ Tableau de bord</button>
-            <button className="profile-btn" onClick={() => navigate('/parcours')}>­ƒôï Mes parcours</button>
+            <button className="profile-btn" onClick={() => navigate('/dashboard')}>Tableau de bord</button>
+            <button className="profile-btn" onClick={() => navigate('/parcours')}>Mes parcours</button>
           </div>
         </div>
       </div>

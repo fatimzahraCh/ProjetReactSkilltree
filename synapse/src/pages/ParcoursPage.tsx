@@ -21,7 +21,7 @@ interface Certificate {
   message: string;
 }
 
-const EMOJIS = ['­ƒÄ»', '­ƒÆí', 'ÔÜí', '­ƒº®', '­ƒöº', '­ƒôÜ', '­ƒîÉ', '­ƒÄ¿', '­ƒôè', '­ƒñû', '­ƒö¼', '­ƒÄ«', '­ƒÅù´©Å', '­ƒøá´©Å', '­ƒôê', '­ƒÆ╗'];
+const EMOJIS = ['🚀', '🧠', '🌿', '⚡', '🔧', '💡', '🎯', '📚', '🧩', '🎓', '✨', '🔁', '📈', '📝', '✔️', '🌟'];
 
 function hashEmoji(label: string): string {
   let hash = 0;
@@ -160,11 +160,11 @@ export default function ParcoursPage() {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <div>
-            <h1 className="parcours-title">­ƒôï Mes parcours</h1>
+            <h1 className="parcours-title">📏 Mes parcours</h1>
             <p className="parcours-subtitle">
               {completedSkills.length === 0
-                ? "Tu n'as pas encore termin├® de comp├®tence. Continue ton apprentissage !"
-                : `Tu as compl├®t├® ${completedSkills.length} comp├®tence${completedSkills.length > 1 ? 's' : ''} sur ton arbre.`}
+                ? "Tu n'as pas encore terminé de compétence. Continue ton apprentissage !"
+                : `Tu as complété ${completedSkills.length} compétence${completedSkills.length > 1 ? 's' : ''} sur ton arbre.`}
             </p>
           </div>
           {completedSkills.length === nodes.length && nodes.length > 0 && (
@@ -191,10 +191,10 @@ export default function ParcoursPage() {
 
         {completedSkills.length === 0 ? (
           <div className="parcours-empty">
-            <div className="parcours-empty-icon">­ƒî▒</div>
-            <p>Commence par d├®bloquer et compl├®ter des comp├®tences depuis ton tableau de bord.</p>
+            <div className="parcours-empty-icon">📌</div>
+            <p>Commence par débloquer et compléter des compétences depuis ton tableau de bord.</p>
             <button className="parcours-btn" onClick={() => navigate('/dashboard')}>
-              ­ƒî│ Aller au tableau de bord
+              Aller au tableau de bord
             </button>
           </div>
         ) : (
@@ -212,7 +212,7 @@ export default function ParcoursPage() {
                 )}
                 <div className="parcours-card-footer">
                   <span className="parcours-card-xp">+{skill.xp} XP</span>
-                  <span className="parcours-card-badge">Ô£à Compl├®t├®</span>
+                  <span className="parcours-card-badge">✅ Complété</span>
                 </div>
               </div>
             ))}

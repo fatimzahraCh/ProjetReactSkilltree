@@ -1,6 +1,7 @@
+﻿import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
+import './CustomNode.css';
 
-// On définit le type des données que notre nœud va recevoir
 interface CustomNodeProps {
   data: {
     label: string;
@@ -8,43 +9,25 @@ interface CustomNodeProps {
   };
 }
 
-export default function CustomNode({ data }: CustomNodeProps) {
-  // Une fonction intelligente pour changer les couleurs selon l'état
-  const getStyles = () => {
-    switch (data.status) {
-      case 'completed': 
-        return { border: '2px solid #2ecc71', background: '#e8f8f5', color: '#27ae60' };
-      case 'unlocked': 
-        return { border: '2px solid #3498db', background: '#ebf5fb', color: '#2980b9', cursor: 'pointer' };
-      case 'locked': 
-      default: 
-        return { border: '2px dashed #bdc3c7', background: '#f8f9fa', color: '#7f8c8d', opacity: 0.7 };
-    }
-  };
+const STATUS_MAP = {
+  completed: { className: 'custom-node--completed', icon: '✅', label: 'Terminé', statusClass: 'custom-node-status--completed' },
+  unlocked: { className: 'custom-node--unlocked', icon: '🔓', label: 'Disponible', statusClass: 'custom-node-status--unlocked' },
+  locked: { className: 'custom-node--locked', icon: '🔒', label: 'Verrouillé', statusClass: 'custom-node-status--locked' },
+} as const;
+
+function CustomNodeInner({ data }: CustomNodeProps) {
+  const status = STATUS_MAP[data.status];
 
   return (
-    <div style={{ 
-      ...getStyles(), 
-      padding: '10px 15px', 
-      borderRadius: '8px', 
-      width: '160px', 
-      textAlign: 'center', 
-      fontWeight: 'bold', 
-      boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-      transition: 'all 0.3s ease'
-    }}>
-      {/* Le point d'accroche en haut (pour les connexions entrantes) */}
-      <Handle type="target" position={Position.Top} style={{ background: '#555' }} />
-      
-      <div>{data.label}</div>
-      
-      {/* L'icône de statut */}
-      <div style={{ fontSize: '0.8rem', marginTop: '8px', fontWeight: 'normal' }}>
-        {data.status === 'completed' ? '✅ Validé' : data.status === 'unlocked' ? '🔓 Disponible' : '🔒 Verrouillé'}
+    <div className={`custom-node ${status.className}`}>
+      <Handle type="target" position={Position.Top} style={{ background: '#64748b', width: 8, height: 8, border: '2px solid var(--bg-card)' }} />
+      <div className="custom-node-label">{data.label}</div>
+      <div className={`custom-node-status ${status.statusClass}`}>
+        {status.icon} {status.label}
       </div>
-
-      {/* Le point d'accroche en bas (pour les connexions sortantes) */}
-      <Handle type="source" position={Position.Bottom} style={{ background: '#555' }} />
+      <Handle type="source" position={Position.Bottom} style={{ background: '#64748b', width: 8, height: 8, border: '2px solid var(--bg-card)' }} />
     </div>
   );
 }
+
+export default memo(CustomNodeInner);

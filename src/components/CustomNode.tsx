@@ -1,4 +1,4 @@
-import { memo } from 'react';
+﻿import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import './CustomNode.css';
 
@@ -10,9 +10,9 @@ interface CustomNodeProps {
 }
 
 const STATUS_MAP = {
-  completed: { className: 'custom-node--completed', icon: '✅', label: 'Validé', statusClass: 'custom-node-status--completed' },
-  unlocked: { className: 'custom-node--unlocked', icon: '🔓', label: 'Disponible', statusClass: 'custom-node-status--unlocked' },
-  locked: { className: 'custom-node--locked', icon: '🔒', label: 'Verrouillé', statusClass: 'custom-node-status--locked' },
+  completed: { className: 'custom-node--completed', icon: 'Ô£à', label: 'Valid├®', statusClass: 'custom-node-status--completed' },
+  unlocked: { className: 'custom-node--unlocked', icon: '­ƒöô', label: 'Disponible', statusClass: 'custom-node-status--unlocked' },
+  locked: { className: 'custom-node--locked', icon: '­ƒöÆ', label: 'Verrouill├®', statusClass: 'custom-node-status--locked' },
 } as const;
 
 function CustomNodeInner({ data }: CustomNodeProps) {

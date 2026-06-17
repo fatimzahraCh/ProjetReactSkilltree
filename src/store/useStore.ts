@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+﻿import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { type Node, type Edge } from 'reactflow';
 import { loginApi, registerApi } from '../api/auth';
@@ -109,7 +109,7 @@ export const useStore = create<AppState>()(
             ? (err as { response: { data: { error?: string } } }).response?.data?.error || ''
             : '';
           // If user not in backend yet, migrate from localStorage
-          if (apiMsg.includes('Aucun compte trouvé')) {
+          if (apiMsg.includes('Aucun compte trouv├®')) {
             const localUsers = get().localUsers;
             const localUser = localUsers.find(u => u.email === email);
             if (localUser && localUser.password === password) {
@@ -157,7 +157,7 @@ export const useStore = create<AppState>()(
 
       updateProfile: async (data) => {
         const user = get().user;
-        if (!user) return 'Non connecté.';
+        if (!user) return 'Non connect├®.';
         try {
           const res = await api.put(`/profile/${encodeURIComponent(user.email)}`, data);
           if (res.data.name) set({ user: { ...user, name: res.data.name } });
@@ -171,7 +171,7 @@ export const useStore = create<AppState>()(
           const apiErr = err && typeof err === 'object' && 'response' in err
             ? (err as { response: { data: { error?: string } } }).response?.data?.error
             : null;
-          return apiErr || 'Erreur de mise à jour.';
+          return apiErr || 'Erreur de mise ├á jour.';
         }
       },
 

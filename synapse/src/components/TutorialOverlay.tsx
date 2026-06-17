@@ -2,10 +2,10 @@
 import { useStore } from '../store/useStore';
 
 const STEPS = [
-  { emoji: '­ƒºá', title: 'Bienvenue sur Synapse !', desc: 'Ton assistant d\'apprentissage par IA. Cr├®e des parcours sur mesure et progresse ├®tape par ├®tape.' },
-  { emoji: '­ƒôØ', title: 'D├®cris ton niveau', desc: 'Indique ce que tu sais d├®j├á et ton objectif. L\'IA g├®n├¿re un arbre de comp├®tences personnalis├®.' },
-  { emoji: '­ƒî│', title: 'Explore l\'arbre', desc: 'Chaque n┼ôud est une comp├®tence. Clique sur un n┼ôud d├®verrouill├® pour voir le cours et passer le quiz.' },
-  { emoji: 'Ô£à', title: 'Valide & Progresse', desc: 'R├®ussis le quiz pour gagner de l\'XP et d├®bloquer les comp├®tences suivantes. ├Ç toi de jouer !' },
+  { emoji: '✨', title: 'Bienvenue sur Synapse !', desc: "Ton assistant d'apprentissage par IA. Crée des parcours sur mesure et progresse étape par étape." },
+  { emoji: '🧠', title: 'Décris ton niveau', desc: "Indique ce que tu sais déjà et ton objectif. L'IA génère un arbre de compétences personnalisé." },
+  { emoji: '🌳', title: 'Explore l\'arbre', desc: "Chaque nœud est une compétence. Clique sur un nœud déverrouillé pour voir le cours et passer le quiz." },
+  { emoji: '🏁', title: 'Valide & Progresse', desc: "Réussis le quiz pour gagner de l'XP et débloquer les compétences suivantes. À toi de jouer !" },
 ];
 
 export default function TutorialOverlay() {
@@ -69,7 +69,7 @@ export default function TutorialOverlay() {
               boxShadow: '0 4px 12px rgba(99,102,241,0.3)',
             }}
           >
-            {isLast ? 'C\'est parti ! ­ƒÜÇ' : 'Suivant ÔåÆ'}
+            {isLast ? "C'est parti !" : 'Suivant'}
           </button>
         </div>
       </div>

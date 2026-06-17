@@ -6,11 +6,11 @@ import './LoginPage.css';
 type Mode = 'login' | 'register';
 
 const SUCCESS_REACTIONS = [
-  { emoji: '­ƒÜÇ', text: 'Pr├¬t ├á apprendre !', sub: 'Bienvenue sur Synapse' },
-  { emoji: '­ƒîƒ', text: 'Compte cr├®├® avec succ├¿s !', sub: 'Ton aventure commence maintenant' },
-  { emoji: '­ƒÄë', text: 'Heureux de te revoir !', sub: 'Reprends ton apprentissage' },
-  { emoji: '­ƒÆ½', text: 'Connexion r├®ussie !', sub: 'Pr├¬t ├á explorer de nouveaux sommets' },
-  { emoji: 'Ô£¿', text: 'Bienvenue dans Synapse !', sub: 'Le savoir est ├á port├®e de main' },
+  { emoji: '✨', text: 'Prêt à apprendre !', sub: 'Bienvenue sur Synapse' },
+  { emoji: '🎉', text: 'Compte créé avec succès !', sub: 'Ton aventure commence maintenant' },
+  { emoji: '👋', text: 'Heureux de te revoir !', sub: 'Reprends ton apprentissage' },
+  { emoji: '✅', text: 'Connexion réussie !', sub: 'Prêt à explorer de nouveaux sommets' },
+  { emoji: '🚀', text: 'Bienvenue dans Synapse !', sub: 'Le savoir est à portée de main' },
 ];
 
 function pickReaction(mode: Mode) {
@@ -98,21 +98,23 @@ export default function LoginPage() {
       <div className="login-grid" />
       <div className="login-card">
         <div className="login-logo">
-          <div className="login-logo-icon">­ƒºá</div>
+          <div className="login-logo-icon">🧠</div>
         </div>
         <h1 className="login-title">Synapse</h1>
-        <p className="login-subtitle">Connecte-toi pour acc├®der ├á ton parcours</p>
+        <p className="login-subtitle">Connecte-toi pour accéder à ton parcours</p>
 
         <div className="login-tabs">
           <button
             className={`login-tab ${mode === 'login' ? 'login-tab--active' : ''}`}
             onClick={() => switchMode('login')}
+            type="button"
           >
             Connexion
           </button>
           <button
             className={`login-tab ${mode === 'register' ? 'login-tab--active' : ''}`}
             onClick={() => switchMode('register')}
+            type="button"
           >
             Inscription
           </button>
@@ -121,9 +123,9 @@ export default function LoginPage() {
         <form className="login-form" onSubmit={handleSubmit}>
           {mode === 'register' && (
             <div className="login-field">
-              <label className="login-label">­ƒæñ Nom d'utilisateur</label>
+              <label className="login-label">Nom d'utilisateur</label>
               <div className="login-input-wrapper">
-                <span className="login-input-icon">­ƒæñ</span>
+                <span className="login-input-icon">🧑</span>
                 <input
                   required
                   type="text"
@@ -137,9 +139,9 @@ export default function LoginPage() {
           )}
 
           <div className="login-field">
-            <label className="login-label">­ƒôº Email</label>
+            <label className="login-label">Email</label>
             <div className="login-input-wrapper">
-              <span className="login-input-icon">Ô£ë´©Å</span>
+              <span className="login-input-icon">📧</span>
               <input
                 required
                 type="email"
@@ -152,14 +154,14 @@ export default function LoginPage() {
           </div>
 
           <div className="login-field">
-            <label className="login-label">­ƒöÆ Mot de passe</label>
+            <label className="login-label">Mot de passe</label>
             <div className="login-input-wrapper">
-              <span className="login-input-icon">­ƒöæ</span>
+              <span className="login-input-icon">🔒</span>
               <input
                 required
                 type="password"
                 className={`login-input ${error ? 'login-input--error' : ''}`}
-                placeholder="ÔÇóÔÇóÔÇóÔÇóÔÇóÔÇóÔÇóÔÇó"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -180,13 +182,13 @@ export default function LoginPage() {
 
           {error && (
             <div className="login-message login-message--error">
-              <span>ÔÜá´©Å</span>
+              <span>⚠️</span>
               <span>{error}</span>
             </div>
           )}
 
           <button type="submit" className="login-submit">
-            {mode === 'login' ? 'Se connecter' : 'Cr├®er mon compte'}
+            {mode === 'login' ? 'Se connecter' : 'Créer mon compte'}
           </button>
         </form>
       </div>

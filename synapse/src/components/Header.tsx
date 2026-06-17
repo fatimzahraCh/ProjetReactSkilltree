@@ -1,36 +1,63 @@
+﻿import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import './Header.css';
 
 export default function Header() {
-  const xp = useStore((state) => state.xp);
-  const resetTree = useStore((state) => state.resetTree); // On récupère la fonction
+  const navigate = useNavigate();
+  const xp = useStore((s) => s.xp);
+  const user = useStore((s) => s.user);
+  const darkMode = useStore((s) => s.darkMode);
+  const logout = useStore((s) => s.logout);
+  const setDarkMode = useStore((s) => s.setDarkMode);
+  const resetTree = useStore((s) => s.resetTree);
+  const nodes = useStore((s) => s.nodes);
+  const [showMenu, setShowMenu] = useState(false);
+
+  const handleReset = () => {
+    if (window.confirm('Réinitialiser votre arbre de compétences ? Cette action est irréversible.')) {
+      resetTree();
+    }
+  };
+
+  const handleLogout = () => { logout(); navigate('/login'); };
 
   return (
-    <header style={{
-      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '15px 30px', backgroundColor: '#2c3e50', color: 'white',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.1)', zIndex: 10, position: 'relative'
-    }}>
-      <h1 style={{ margin: 0, fontSize: '1.5rem', letterSpacing: '1px' }}>🧠 Synapse</h1>
-      
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        {/* Bouton de réinitialisation */}
-        <button 
-          onClick={resetTree}
-          style={{
-            background: 'transparent', border: '1px solid #7f8c8d', color: '#ecf0f1',
-            padding: '5px 15px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.9rem'
-          }}
-        >
-          🔄 Recommencer
+    <header className="header">
+      <div className="header-left">
+        <div className="header-logo-icon" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>🌟</div>
+        <h1 className="header-title" onClick={() => navigate('/dashboard')} style={{ cursor: 'pointer' }}>Synapse</h1>
+      </div>
+
+      <div className="header-center">
+        <div className="header-xp-badge">✨ {xp} XP</div>
+      </div>
+
+      <div className="header-right">
+        {nodes.length > 0 && (
+          <button onClick={handleReset} className="header-reset-btn" title="Réinitialiser l'arbre">
+            Réinitialiser
+          </button>
+        )}
+        <button onClick={() => setDarkMode(!darkMode)} className="header-icon-btn" title={darkMode ? 'Mode clair' : 'Mode sombre'}>
+          {darkMode ? '☀️' : '🌙'}
         </button>
 
-        <div style={{
-          background: '#f39c12', padding: '8px 20px', borderRadius: '20px',
-          fontWeight: 'bold', fontSize: '1.1rem', color: '#fff',
-          boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-        }}>
-          ⭐ {xp} XP
-        </div>
+        {user && (
+          <div className="header-user" onClick={() => setShowMenu(!showMenu)} style={{ cursor: 'pointer', position: 'relative' }}>
+            <span className="header-user-avatar">{user.name.charAt(0).toUpperCase()}</span>
+            <span className="header-user-name">{user.name}</span>
+            {showMenu && (
+              <div className="header-dropdown">
+                <button onClick={() => { navigate('/profile'); setShowMenu(false); }} className="header-dropdown-item">Profil</button>
+                <button onClick={() => { navigate('/parcours'); setShowMenu(false); }} className="header-dropdown-item">Mes parcours</button>
+                <div className="header-dropdown-divider" />
+                <button onClick={handleLogout} className="header-dropdown-item header-dropdown-item--danger">Déconnexion</button>
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </header>
   );

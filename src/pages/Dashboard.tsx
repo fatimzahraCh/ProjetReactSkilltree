@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+﻿import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header';
 import SkillTree from '../components/SkillTree';
@@ -19,11 +19,11 @@ export default function Dashboard() {
       <div className="dashboard">
         <Header />
         <div className="dashboard-empty">
-          <div className="dashboard-empty-icon">🌳</div>
+          <div className="dashboard-empty-icon">­ƒî│</div>
           <h2 className="dashboard-empty-title">Aucun parcours pour l'instant</h2>
-          <p className="dashboard-empty-text">Génère ton premier arbre de compétences pour voir ton tableau de bord.</p>
+          <p className="dashboard-empty-text">G├®n├¿re ton premier arbre de comp├®tences pour voir ton tableau de bord.</p>
           <button className="dashboard-empty-btn" onClick={() => navigate('/onboarding')}>
-            Créer mon parcours 🚀
+            Cr├®er mon parcours ­ƒÜÇ
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { generateSkillTree } from '../api/llmService';
 import { useStore } from '../store/useStore';
@@ -29,7 +29,7 @@ export default function Onboarding() {
     } catch (error) {
       setIsGenerating(false);
       console.error(error);
-      const message = error instanceof Error ? error.message : "Erreur lors de la génération.";
+      const message = error instanceof Error ? error.message : "Erreur lors de la g├®n├®ration.";
       setErrorMsg(message);
       setIsGenerating(false);
     }
@@ -40,18 +40,18 @@ export default function Onboarding() {
       <div className="onboarding-grid" />
       <div className="onboarding-card">
         <div className="onboarding-logo">
-          <div className="onboarding-logo-icon">🧠</div>
+          <div className="onboarding-logo-icon">­ƒºá</div>
         </div>
         <h1 className="onboarding-title">Synapse</h1>
         <p className="onboarding-subtitle">
-          Générez votre parcours d'apprentissage sur mesure grâce à l'IA.
+          G├®n├®rez votre parcours d'apprentissage sur mesure gr├óce ├á l'IA.
         </p>
 
         <form className="onboarding-form" onSubmit={handleGenerate}>
           <div className="onboarding-field">
             <label className="onboarding-label">
-              <span className="onboarding-label-icon">📚</span>
-              Que savez-vous déjà faire ?
+              <span className="onboarding-label-icon">­ƒôÜ</span>
+              Que savez-vous d├®j├á faire ?
             </label>
             <input
               required
@@ -64,14 +64,14 @@ export default function Onboarding() {
           </div>
           <div className="onboarding-field">
             <label className="onboarding-label">
-              <span className="onboarding-label-icon">🎯</span>
+              <span className="onboarding-label-icon">­ƒÄ»</span>
               Quel est votre objectif ?
             </label>
             <input
               required
               type="text"
               className="onboarding-input"
-              placeholder="Ex: Devenir développeur React..."
+              placeholder="Ex: Devenir d├®veloppeur React..."
               value={targetGoal}
               onChange={(e) => setTargetGoal(e.target.value)}
             />
@@ -90,22 +90,22 @@ export default function Onboarding() {
                 Analyse par l'IA en cours...
               </span>
             ) : (
-              'Générer mon parcours 🚀'
+              'G├®n├®rer mon parcours ­ƒÜÇ'
             )}
           </button>
         </form>
 
         <div className="onboarding-features">
           <div className="onboarding-feature">
-            <span className="onboarding-feature-icon">🤖</span>
-            Parcours généré par IA
+            <span className="onboarding-feature-icon">­ƒñû</span>
+            Parcours g├®n├®r├® par IA
           </div>
           <div className="onboarding-feature">
-            <span className="onboarding-feature-icon">🎮</span>
+            <span className="onboarding-feature-icon">­ƒÄ«</span>
             Apprentissage interactif
           </div>
           <div className="onboarding-feature">
-            <span className="onboarding-feature-icon">🏆</span>
+            <span className="onboarding-feature-icon">­ƒÅå</span>
             Quiz de validation
           </div>
         </div>

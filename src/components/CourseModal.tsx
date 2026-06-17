@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { type Node } from 'reactflow';
 import { useStore } from '../store/useStore';
 import Quiz from './Quiz';
@@ -36,7 +36,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
       }
       setIsLoadingContent(false);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Impossible de générer le cours pour le moment.';
+      const message = error instanceof Error ? error.message : 'Impossible de g├®n├®rer le cours pour le moment.';
       setErrorMsg(message);
       setIsLoadingContent(false);
     }
@@ -70,7 +70,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
 
   const handleQuizFail = () => {
     setShowQuiz(false);
-    setErrorMsg('Échec du test. Relisez bien le cours avant de réessayer !');
+    setErrorMsg('├ëchec du test. Relisez bien le cours avant de r├®essayer !');
   };
 
   const statusBadgeClass = `modal-status-badge--${node.data.status}`;
@@ -86,14 +86,14 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
 
       {content?.fallbackReason && (
         <div className="modal-alert modal-alert--warning">
-          <span>⚠️</span>
+          <span>ÔÜá´©Å</span>
           <span>
             {content.fallbackReason}
             {countdown > 0 && (
               <span className="modal-countdown"> Nouvelle tentative dans <strong>{countdown}s</strong></span>
             )}
             {countdown === 0 && content.isFallback && (
-              <span className="modal-countdown--ready"> ☝️ Rafraîchis la page pour recharger le contenu IA</span>
+              <span className="modal-countdown--ready"> ÔÿØ´©Å Rafra├«chis la page pour recharger le contenu IA</span>
             )}
           </span>
         </div>
@@ -101,7 +101,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
 
       {errorMsg && (
         <div className="modal-alert modal-alert--error">
-          <span>❌</span>
+          <span>ÔØî</span>
           <span>{errorMsg}</span>
         </div>
       )}
@@ -109,7 +109,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
       {isLoadingContent && (
         <div className="modal-loading">
           <div className="modal-loading-spinner" />
-          <p className="modal-loading-text">🤖 L'IA génère votre cours sur mesure{dots}</p>
+          <p className="modal-loading-text">­ƒñû L'IA g├®n├¿re votre cours sur mesure{dots}</p>
         </div>
       )}
 
@@ -117,7 +117,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
         <div className="modal-course">
           <div className="modal-course-content">
             <p className="modal-course-intro"><strong>Introduction :</strong><br />{content.course.introduction}</p>
-            <p className="modal-course-section-title">Points clés à retenir</p>
+            <p className="modal-course-section-title">Points cl├®s ├á retenir</p>
             <ul className="modal-course-key-points">
               {content.course.keyPoints.map((point, i) => (
                 <li key={i}>{point}</li>
@@ -126,7 +126,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
           </div>
 
           <div className="modal-youtube-section">
-            <p className="modal-youtube-title">📺 Recherches YouTube suggérées</p>
+            <p className="modal-youtube-title">­ƒô║ Recherches YouTube sugg├®r├®es</p>
             <ul className="modal-youtube-list">
               {content.course.youtubeSearchTerms.map((term, i) => (
                 <li key={i}>
@@ -136,7 +136,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
                     rel="noreferrer"
                     className="modal-youtube-link"
                   >
-                    ▶️ {term}
+                    ÔûÂ´©Å {term}
                   </a>
                 </li>
               ))}
@@ -155,7 +155,7 @@ function CourseModalContent({ node, onClose }: { node: Node; onClose: () => void
         </button>
         {!isLoadingContent && content && !showQuiz && node.data.status === 'unlocked' && (
           <button onClick={() => setShowQuiz(true)} className="modal-btn modal-btn--primary">
-            Passer l'épreuve
+            Passer l'├®preuve
           </button>
         )}
       </div>

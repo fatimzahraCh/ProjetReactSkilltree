@@ -1,4 +1,4 @@
-const GEMINI_MODEL = 'gemini-2.5-flash';
+﻿const GEMINI_MODEL = 'gemini-2.5-flash';
 
 const CACHE_PREFIX = 'synapse_cache_';
 const RATE_LIMIT_KEY = CACHE_PREFIX + 'rate_limit';
@@ -7,7 +7,7 @@ function getApiKey(): string {
   const apiKey = import.meta.env.VITE_LLM_API_KEY?.trim();
   if (!apiKey) {
     throw new Error(
-      'Clé API manquante. Ajoutez VITE_LLM_API_KEY dans le fichier .env à la racine du projet synapse, puis redémarrez npm run dev.'
+      'Cl├® API manquante. Ajoutez VITE_LLM_API_KEY dans le fichier .env ├á la racine du projet synapse, puis red├®marrez npm run dev.'
     );
   }
   return apiKey;
@@ -99,7 +99,7 @@ async function waitForQuota(): Promise<void> {
   const { remaining, resetAfterMs } = getRemainingQuota();
   if (remaining > 0) return;
   const waitMs = Math.min(resetAfterMs + 500, 60_000);
-  console.warn(`[Rate Limit] Quota épuisé, attente de ${Math.round(waitMs / 1000)}s`);
+  console.warn(`[Rate Limit] Quota ├®puis├®, attente de ${Math.round(waitMs / 1000)}s`);
   await new Promise(resolve => setTimeout(resolve, waitMs));
 }
 
@@ -135,11 +135,11 @@ async function callGemini(systemPrompt: string, userMessage: string) {
     const errorBody = await response.json().catch(() => null);
     const message =
       errorBody?.error?.message ??
-      `Erreur HTTP ${response.status} lors de l'appel à Gemini.`;
+      `Erreur HTTP ${response.status} lors de l'appel ├á Gemini.`;
 
     if (response.status === 403) {
       throw new Error(
-        `Clé API Gemini refusée : ${message} Créez une nouvelle clé sur https://aistudio.google.com/apikey`
+        `Cl├® API Gemini refus├®e : ${message} Cr├®ez une nouvelle cl├® sur https://aistudio.google.com/apikey`
       );
     }
 
@@ -155,7 +155,7 @@ async function callGemini(systemPrompt: string, userMessage: string) {
   const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
   if (!rawText) {
-    throw new Error('Réponse vide de Gemini. Réessayez dans quelques instants.');
+    throw new Error('R├®ponse vide de Gemini. R├®essayez dans quelques instants.');
   }
 
   const cleanText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -187,22 +187,22 @@ function parseRetryAfter(message: string): number {
 export { QuotaError };
 
 // ============================================================================
-// 1. GÉNÉRATION DE L'ARBRE DE COMPÉTENCES
+// 1. G├ëN├ëRATION DE L'ARBRE DE COMP├ëTENCES
 // ============================================================================
 
 const SYSTEM_PROMPT = `Tu es le moteur d'intelligence artificielle de "Synapse", une application d'apprentissage.
-Ton rôle est de prendre les compétences actuelles de l'utilisateur et son objectif, et de générer un parcours d'apprentissage sous forme d'arbre interactif.
+Ton r├┤le est de prendre les comp├®tences actuelles de l'utilisateur et son objectif, et de g├®n├®rer un parcours d'apprentissage sous forme d'arbre interactif.
 
-Tu dois répondre UNIQUEMENT avec un objet JSON valide, sans AUCUN texte avant ou après, et sans utiliser de balises markdown comme \`\`\`json.
-Génère un arbre logique de 4 à 5 compétences pour atteindre l'objectif.
+Tu dois r├®pondre UNIQUEMENT avec un objet JSON valide, sans AUCUN texte avant ou apr├¿s, et sans utiliser de balises markdown comme \`\`\`json.
+G├®n├¿re un arbre logique de 4 ├á 5 comp├®tences pour atteindre l'objectif.
 Les positions Y doivent augmenter de 150 pour chaque niveau (ex: niveau 1 -> y: 50, niveau 2 -> y: 200).
 
 Structure JSON OBLIGATOIRE :
 {
   "xp": 0,
   "nodes": [
-    { "id": "1", "position": { "x": 250, "y": 50 }, "type": "custom", "data": { "label": "Nom de la compétence", "status": "completed" } },
-    { "id": "2", "position": { "x": 100, "y": 200 }, "type": "custom", "data": { "label": "Nom de la compétence", "status": "unlocked" } }
+    { "id": "1", "position": { "x": 250, "y": 50 }, "type": "custom", "data": { "label": "Nom de la comp├®tence", "status": "completed" } },
+    { "id": "2", "position": { "x": 100, "y": 200 }, "type": "custom", "data": { "label": "Nom de la comp├®tence", "status": "unlocked" } }
   ],
   "edges": [
     { "id": "e1-2", "source": "1", "target": "2", "animated": true }
@@ -218,7 +218,7 @@ function buildFallbackTree(currentSkills: string, targetGoal: string) {
       { id: '1', position: { x: 250, y: 50 }, type: 'custom', data: { label: `Consolider ${skills}`, status: 'completed' } },
       { id: '2', position: { x: 100, y: 200 }, type: 'custom', data: { label: `Fondamentaux de ${goal}`, status: 'unlocked' } },
       { id: '3', position: { x: 400, y: 200 }, type: 'custom', data: { label: 'Mise en pratique', status: 'locked' } },
-      { id: '4', position: { x: 250, y: 350 }, type: 'custom', data: { label: `Maîtriser ${goal}`, status: 'locked' } },
+      { id: '4', position: { x: 250, y: 350 }, type: 'custom', data: { label: `Ma├«triser ${goal}`, status: 'locked' } },
     ],
     edges: [
       { id: 'e1-2', source: '1', target: '2', animated: true },
@@ -243,15 +243,15 @@ export const generateSkillTree = async (currentSkills: string, targetGoal: strin
   try {
     const result = await callGemini(
       SYSTEM_PROMPT,
-      `Je sais déjà faire : ${currentSkills}\nMon objectif est : ${targetGoal}`
+      `Je sais d├®j├á faire : ${currentSkills}\nMon objectif est : ${targetGoal}`
     );
     cacheSet(key, result, 600_000);
     return result;
   } catch (error) {
-    console.error("Erreur lors de la génération de l'arbre avec Gemini:", error);
+    console.error("Erreur lors de la g├®n├®ration de l'arbre avec Gemini:", error);
 
     const message = error instanceof Error ? error.message : '';
-    if (message.includes('Clé API manquante') || message.includes('Clé API Gemini refusée')) {
+    if (message.includes('Cl├® API manquante') || message.includes('Cl├® API Gemini refus├®e')) {
       throw error;
     }
 
@@ -261,29 +261,29 @@ export const generateSkillTree = async (currentSkills: string, targetGoal: strin
 };
 
 // ============================================================================
-// 2. GÉNÉRATION DES COURS ET DES QUIZ
+// 2. G├ëN├ëRATION DES COURS ET DES QUIZ
 // ============================================================================
 
-const COURSE_SYSTEM_PROMPT = `Tu es un professeur expert. L'utilisateur veut apprendre une compétence spécifique.
-Génère un mini-cours structuré et un quiz de 2 questions pour valider cette compétence.
-Tu dois répondre UNIQUEMENT avec un objet JSON valide, sans texte avant ou après, et sans balises markdown.
+const COURSE_SYSTEM_PROMPT = `Tu es un professeur expert. L'utilisateur veut apprendre une comp├®tence sp├®cifique.
+G├®n├¿re un mini-cours structur├® et un quiz de 2 questions pour valider cette comp├®tence.
+Tu dois r├®pondre UNIQUEMENT avec un objet JSON valide, sans texte avant ou apr├¿s, et sans balises markdown.
 
 Structure JSON OBLIGATOIRE :
 {
   "course": {
     "introduction": "Un paragraphe d'explication simple et clair.",
-    "keyPoints": ["Point clé 1 expliquant un concept", "Point clé 2", "Point clé 3"],
-    "youtubeSearchTerms": ["Mots clés précis pour trouver un bon tuto YouTube", "Autre recherche YouTube"]
+    "keyPoints": ["Point cl├® 1 expliquant un concept", "Point cl├® 2", "Point cl├® 3"],
+    "youtubeSearchTerms": ["Mots cl├®s pr├®cis pour trouver un bon tuto YouTube", "Autre recherche YouTube"]
   },
   "quiz": [
     {
-      "question": "Une question pour tester la compréhension ?",
-      "options": ["Mauvaise réponse", "Bonne réponse", "Autre mauvaise réponse"],
+      "question": "Une question pour tester la compr├®hension ?",
+      "options": ["Mauvaise r├®ponse", "Bonne r├®ponse", "Autre mauvaise r├®ponse"],
       "correctIndex": 1
     },
     {
       "question": "Une autre question ?",
-      "options": ["Réponse A", "Réponse B", "Réponse C"],
+      "options": ["R├®ponse A", "R├®ponse B", "R├®ponse C"],
       "correctIndex": 0
     }
   ]
@@ -307,53 +307,53 @@ export interface CourseContent {
 
 const QUESTION_POOL = [
   {
-    question: (s: string) => `Quelle est la première étape pour apprendre "${s}" ?`,
-    options: ['Comprendre les concepts de base', 'Acheter du matériel coûteux', 'Trouver un mentor'],
+    question: (s: string) => `Quelle est la premi├¿re ├®tape pour apprendre "${s}" ?`,
+    options: ['Comprendre les concepts de base', 'Acheter du mat├®riel co├╗teux', 'Trouver un mentor'],
     answer: 0,
   },
   {
     question: (s: string) => `Dans "${s}", quelle pratique est la plus efficace ?`,
-    options: ['Lire sans appliquer', 'Pratiquer régulièrement avec des projets', 'Regarder des vidéos passivement'],
+    options: ['Lire sans appliquer', 'Pratiquer r├®guli├¿rement avec des projets', 'Regarder des vid├®os passivement'],
     answer: 1,
   },
   {
     question: (s: string) => `Quel est l'objectif principal de "${s}" dans un parcours d'apprentissage ?`,
-    options: ['Ignorer les bases', 'Acquérir des fondamentaux solides', 'Aller directement au niveau expert'],
+    options: ['Ignorer les bases', 'Acqu├®rir des fondamentaux solides', 'Aller directement au niveau expert'],
     answer: 1,
   },
   {
-    question: (s: string) => `Comment valider sa maîtrise de "${s}" ?`,
-    options: ['Réussir un quiz ou un projet pratique', 'Regarder un tutorial une fois', 'Avoir suivi un cours sans pratiquer'],
+    question: (s: string) => `Comment valider sa ma├«trise de "${s}" ?`,
+    options: ['R├®ussir un quiz ou un projet pratique', 'Regarder un tutorial une fois', 'Avoir suivi un cours sans pratiquer'],
     answer: 0,
   },
   {
-    question: (s: string) => `Quelle erreur est fréquente quand on débute "${s}" ?`,
+    question: (s: string) => `Quelle erreur est fr├®quente quand on d├®bute "${s}" ?`,
     options: ['Pratiquer trop peu', 'Prendre des notes', 'Poser des questions'],
     answer: 0,
   },
   {
-    question: (s: string) => `Quelle ressource est la plus adaptée pour "${s}" ?`,
-    options: ['Un cours structuré avec exercices', 'Un seul article Wikipédia', 'N\'importe quelle vidéo YouTube'],
+    question: (s: string) => `Quelle ressource est la plus adapt├®e pour "${s}" ?`,
+    options: ['Un cours structur├® avec exercices', 'Un seul article Wikip├®dia', 'N\'importe quelle vid├®o YouTube'],
     answer: 0,
   },
   {
-    question: (s: string) => `Quel rythme d'apprentissage est recommandé pour "${s}" ?`,
-    options: ['Progresser par petites étapes régulières', 'Tout apprendre en un jour', 'Étudier une fois par mois'],
+    question: (s: string) => `Quel rythme d'apprentissage est recommand├® pour "${s}" ?`,
+    options: ['Progresser par petites ├®tapes r├®guli├¿res', 'Tout apprendre en un jour', '├ëtudier une fois par mois'],
     answer: 0,
   },
   {
-    question: (s: string) => `Avant d'attaquer "${s}", il est préférable de :`,
-    options: ['Avoir les prérequis nécessaires', 'Avoir 5 ans d\'expérience', 'Ne rien préparer du tout'],
+    question: (s: string) => `Avant d'attaquer "${s}", il est pr├®f├®rable de :`,
+    options: ['Avoir les pr├®requis n├®cessaires', 'Avoir 5 ans d\'exp├®rience', 'Ne rien pr├®parer du tout'],
     answer: 0,
   },
   {
     question: (s: string) => `Quelle approche fonctionne le mieux pour "${s}" ?`,
-    options: ['Théorie puis pratique immédiate', 'Théorie seulement', 'Pratique sans aucune théorie'],
+    options: ['Th├®orie puis pratique imm├®diate', 'Th├®orie seulement', 'Pratique sans aucune th├®orie'],
     answer: 0,
   },
   {
-    question: (s: string) => `Pour "${s}", quel est le piège à éviter ?`,
-    options: ['Vouloir tout maîtriser trop vite', 'Prendre son temps', 'Revoir les bases'],
+    question: (s: string) => `Pour "${s}", quel est le pi├¿ge ├á ├®viter ?`,
+    options: ['Vouloir tout ma├«triser trop vite', 'Prendre son temps', 'Revoir les bases'],
     answer: 0,
   },
 ];
@@ -374,13 +374,13 @@ function buildFallbackCourse(skillName: string): CourseContent {
 
   return {
     course: {
-      introduction: `${skillName} est une étape importante de votre parcours. Ce mini-cours résume les concepts essentiels à connaître avant de passer au quiz.`,
+      introduction: `${skillName} est une ├®tape importante de votre parcours. Ce mini-cours r├®sume les concepts essentiels ├á conna├«tre avant de passer au quiz.`,
       keyPoints: [
         `Comprendre les fondamentaux de ${skillName}`,
-        'Pratiquer régulièrement avec des exercices courts',
-        'Consolider vos acquis avant de passer à la compétence suivante',
+        'Pratiquer r├®guli├¿rement avec des exercices courts',
+        'Consolider vos acquis avant de passer ├á la comp├®tence suivante',
       ],
-      youtubeSearchTerms: [`${skillName} cours débutant`, `${skillName} tutorial français`],
+      youtubeSearchTerms: [`${skillName} cours d├®butant`, `${skillName} tutorial fran├ºais`],
     },
     quiz: [
       {
@@ -406,32 +406,32 @@ export const generateCourseAndQuiz = async (skillName: string): Promise<CourseCo
   try {
     const result = await callGemini(
       COURSE_SYSTEM_PROMPT,
-      `La compétence à enseigner est : ${skillName}`
+      `La comp├®tence ├á enseigner est : ${skillName}`
     );
     const content: CourseContent = { ...result, isFallback: false };
     cacheSet(key, content, 600_000);
     return content;
   } catch (error) {
-    console.error('Erreur lors de la génération du cours avec Gemini:', error);
+    console.error('Erreur lors de la g├®n├®ration du cours avec Gemini:', error);
 
     const message = error instanceof Error ? error.message : '';
-    if (message.includes('Clé API manquante') || message.includes('Clé API Gemini refusée')) {
+    if (message.includes('Cl├® API manquante') || message.includes('Cl├® API Gemini refus├®e')) {
       throw error;
     }
 
     const fallback = buildFallbackCourse(skillName);
 
     if (error instanceof QuotaError) {
-      fallback.fallbackReason = `Limite de l'API Gemini atteinte. Réessaye automatique dans ${error.retryAfterSeconds} seconde${error.retryAfterSeconds > 1 ? 's' : ''}. Contenu de démonstration affiché.`;
+      fallback.fallbackReason = `Limite de l'API Gemini atteinte. R├®essaye automatique dans ${error.retryAfterSeconds} seconde${error.retryAfterSeconds > 1 ? 's' : ''}. Contenu de d├®monstration affich├®.`;
       fallback.retryAfterSeconds = error.retryAfterSeconds;
       scheduleRetry(key, skillName, error.retryAfterSeconds);
     } else if (message.includes('quota') || message.includes('429') || message.includes('Quota exceeded') || message.includes('rate_limit') || message.includes('Resource has been exhausted')) {
       const retrySeconds = parseRetryAfter(message);
-      fallback.fallbackReason = `Limite de l'API Gemini atteinte. Réessaye automatique dans ${retrySeconds} seconde${retrySeconds > 1 ? 's' : ''}. Contenu de démonstration affiché.`;
+      fallback.fallbackReason = `Limite de l'API Gemini atteinte. R├®essaye automatique dans ${retrySeconds} seconde${retrySeconds > 1 ? 's' : ''}. Contenu de d├®monstration affich├®.`;
       fallback.retryAfterSeconds = retrySeconds;
       scheduleRetry(key, skillName, retrySeconds);
     } else {
-      fallback.fallbackReason = 'L\'IA est temporairement indisponible. Contenu de démonstration affiché.';
+      fallback.fallbackReason = 'L\'IA est temporairement indisponible. Contenu de d├®monstration affich├®.';
     }
 
     return fallback;
@@ -443,11 +443,11 @@ function scheduleRetry(cacheKey: string, skillName: string, delaySeconds: number
     try {
       const result = await callGemini(
         COURSE_SYSTEM_PROMPT,
-        `La compétence à enseigner est : ${skillName}`
+        `La comp├®tence ├á enseigner est : ${skillName}`
       );
       const content: CourseContent = { ...result, isFallback: false };
       cacheSet(cacheKey, content, 600_000);
-      console.log(`[Cache] Contenu IA mis en cache pour "${skillName}" après levée du quota`);
+      console.log(`[Cache] Contenu IA mis en cache pour "${skillName}" apr├¿s lev├®e du quota`);
     } catch {
       // Silently ignore retry failure
     }
