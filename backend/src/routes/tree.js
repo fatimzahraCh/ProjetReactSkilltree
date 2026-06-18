@@ -4,15 +4,17 @@ import db from '../db.js';
 const router = Router();
 
 // GET /api/tree/:email
-router.get('/:email', (req, res) => {
+router.get('/:email', async (req, res) => {
   try {
     const { email } = req.params;
-    const user = db.prepare('SELECT email FROM users WHERE email = ?').get(email);
+    const userRes = await db.query('SELECT email FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur introuvable.' });
     }
 
-    const tree = db.prepare('SELECT * FROM trees WHERE email = ?').get(email);
+    const treeRes = await db.query('SELECT * FROM trees WHERE email = $1', [email]);
+    const tree = treeRes.rows[0];
     if (!tree) {
       return res.json({ xp: 0, nodes: [], edges: [] });
     }
@@ -29,25 +31,26 @@ router.get('/:email', (req, res) => {
 });
 
 // PUT /api/tree/:email
-router.put('/:email', (req, res) => {
+router.put('/:email', async (req, res) => {
   try {
     const { email } = req.params;
     const { xp, nodes, edges } = req.body;
 
-    const user = db.prepare('SELECT email FROM users WHERE email = ?').get(email);
+    const userRes = await db.query('SELECT email FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur introuvable.' });
     }
 
-    db.prepare(`
+    await db.query(`
       INSERT INTO trees (email, xp, nodes, edges, updated_at)
-      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+      VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)
       ON CONFLICT(email) DO UPDATE SET
-        xp = excluded.xp,
-        nodes = excluded.nodes,
-        edges = excluded.edges,
+        xp = EXCLUDED.xp,
+        nodes = EXCLUDED.nodes,
+        edges = EXCLUDED.edges,
         updated_at = CURRENT_TIMESTAMP
-    `).run(email, xp ?? 0, JSON.stringify(nodes ?? []), JSON.stringify(edges ?? []));
+    `, [email, xp ?? 0, JSON.stringify(nodes ?? []), JSON.stringify(edges ?? [])]);
 
     res.json({ message: 'Arbre sauvegardé.' });
   } catch (err) {
@@ -57,7 +60,7 @@ router.put('/:email', (req, res) => {
 });
 
 // POST /api/tree/:email/complete-skill
-router.post('/:email/complete-skill', (req, res) => {
+router.post('/:email/complete-skill', async (req, res) => {
   try {
     const { email } = req.params;
     const { nodeId } = req.body;
@@ -66,7 +69,8 @@ router.post('/:email/complete-skill', (req, res) => {
       return res.status(400).json({ error: 'nodeId requis.' });
     }
 
-    const tree = db.prepare('SELECT * FROM trees WHERE email = ?').get(email);
+    const treeRes = await db.query('SELECT * FROM trees WHERE email = $1', [email]);
+    const tree = treeRes.rows[0];
     if (!tree) {
       return res.status(404).json({ error: 'Arbre introuvable.' });
     }
@@ -99,10 +103,10 @@ router.post('/:email/complete-skill', (req, res) => {
 
     const newXp = (tree.xp || 0) + 50;
 
-    db.prepare(`
-      UPDATE trees SET xp = ?, nodes = ?, edges = ?, updated_at = CURRENT_TIMESTAMP
-      WHERE email = ?
-    `).run(newXp, JSON.stringify(finalNodes), JSON.stringify(edges), email);
+    await db.query(`
+      UPDATE trees SET xp = $1, nodes = $2, edges = $3, updated_at = CURRENT_TIMESTAMP
+      WHERE email = $4
+    `, [newXp, JSON.stringify(finalNodes), JSON.stringify(edges), email]);
 
     res.json({ xp: newXp, nodes: finalNodes, edges });
   } catch (err) {
@@ -112,17 +116,17 @@ router.post('/:email/complete-skill', (req, res) => {
 });
 
 // DELETE /api/tree/:email
-router.delete('/:email', (req, res) => {
+router.delete('/:email', async (req, res) => {
   try {
     const { email } = req.params;
 
-    const user = db.prepare('SELECT email FROM users WHERE email = ?').get(email);
+    const userRes = await db.query('SELECT email FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur introuvable.' });
     }
 
-    db.prepare('UPDATE trees SET xp = 0, nodes = ?, edges = ? WHERE email = ?')
-      .run('[]', '[]', email);
+    await db.query('UPDATE trees SET xp = 0, nodes = $1, edges = $2 WHERE email = $3', ['[]', '[]', email]);
 
     res.json({ message: 'Arbre réinitialisé.' });
   } catch (err) {

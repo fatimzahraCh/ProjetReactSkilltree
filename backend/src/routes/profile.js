@@ -11,9 +11,10 @@ function hashPassword(password) {
 }
 
 // GET /api/profile/:email
-router.get('/:email', (req, res) => {
+router.get('/:email', async (req, res) => {
   try {
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(req.params.email);
+    const userRes = await db.query('SELECT * FROM users WHERE email = $1', [req.params.email]);
+    const user = userRes.rows[0];
     if (!user) return res.status(404).json({ error: 'Utilisateur introuvable.' });
     res.json({
       email: user.email,
@@ -30,17 +31,18 @@ router.get('/:email', (req, res) => {
 });
 
 // PUT /api/profile/:email — update name, dark_mode, tutorial_done, password
-router.put('/:email', (req, res) => {
+router.put('/:email', async (req, res) => {
   try {
     const { name, darkMode, tutorialDone, currentPassword, newPassword } = req.body;
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(req.params.email);
+    const userRes = await db.query('SELECT * FROM users WHERE email = $1', [req.params.email]);
+    const user = userRes.rows[0];
     if (!user) return res.status(404).json({ error: 'Utilisateur introuvable.' });
 
-    if (name !== undefined) db.prepare('UPDATE users SET name = ? WHERE email = ?').run(name, req.params.email);
-    if (darkMode !== undefined) db.prepare('UPDATE users SET dark_mode = ? WHERE email = ?').run(darkMode ? 1 : 0, req.params.email);
+    if (name !== undefined) await db.query('UPDATE users SET name = $1 WHERE email = $2', [name, req.params.email]);
+    if (darkMode !== undefined) await db.query('UPDATE users SET dark_mode = $1 WHERE email = $2', [darkMode ? 1 : 0, req.params.email]);
 
     if (tutorialDone !== undefined) {
-      db.prepare('UPDATE users SET tutorial_done = ? WHERE email = ?').run(tutorialDone ? 1 : 0, req.params.email);
+      await db.query('UPDATE users SET tutorial_done = $1 WHERE email = $2', [tutorialDone ? 1 : 0, req.params.email]);
     }
 
     if (currentPassword && newPassword) {
@@ -48,10 +50,11 @@ router.put('/:email', (req, res) => {
         return res.status(400).json({ error: 'Mot de passe actuel incorrect.' });
       if (newPassword.length < 4)
         return res.status(400).json({ error: 'Nouveau mot de passe trop court (min 4).' });
-      db.prepare('UPDATE users SET password = ? WHERE email = ?').run(hashPassword(newPassword), req.params.email);
+      await db.query('UPDATE users SET password = $1 WHERE email = $2', [hashPassword(newPassword), req.params.email]);
     }
 
-    const updated = db.prepare('SELECT * FROM users WHERE email = ?').get(req.params.email);
+    const updatedRes = await db.query('SELECT * FROM users WHERE email = $1', [req.params.email]);
+    const updated = updatedRes.rows[0];
     res.json({
       email: updated.email,
       name: updated.name,
@@ -67,15 +70,16 @@ router.put('/:email', (req, res) => {
 });
 
 // GET /api/profile/:email/stats
-router.get('/:email/stats', (req, res) => {
+router.get('/:email/stats', async (req, res) => {
   try {
     const { email } = req.params;
-    const tree = db.prepare('SELECT * FROM trees WHERE email = ?').get(email);
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const treeRes = await db.query('SELECT * FROM trees WHERE email = $1', [email]);
+    const tree = treeRes.rows[0];
+    const userRes = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
     if (!tree || !user) return res.status(404).json({ error: 'Données introuvables.' });
 
     const nodes = JSON.parse(tree.nodes);
-    const edges = JSON.parse(tree.edges);
     const total = nodes.length;
     const completed = nodes.filter(n => n.data?.status === 'completed').length;
     const unlocked = nodes.filter(n => n.data?.status === 'unlocked').length;
@@ -84,7 +88,8 @@ router.get('/:email/stats', (req, res) => {
 
     // Activity for last 7 days
     const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
-    const activity = db.prepare('SELECT date FROM activity_log WHERE email = ? AND date >= ? ORDER BY date').all(email, weekAgo);
+    const activityRes = await db.query('SELECT date FROM activity_log WHERE email = $1 AND date >= $2 ORDER BY date', [email, weekAgo]);
+    const activity = activityRes.rows;
 
     res.json({
       totalSkills: total,
@@ -95,7 +100,12 @@ router.get('/:email/stats', (req, res) => {
       xp: tree.xp,
       streakCount: user.streak_count || 0,
       lastActive: user.last_active,
-      activityDays: activity.map(a => a.date),
+      activityDays: activity.map(a => {
+        if (a.date instanceof Date) {
+          return a.date.toISOString().slice(0, 10);
+        }
+        return String(a.date).slice(0, 10);
+      }),
     });
   } catch (err) {
     console.error(err);
@@ -104,10 +114,11 @@ router.get('/:email/stats', (req, res) => {
 });
 
 // GET /api/profile/:email/export
-router.get('/:email/export', (req, res) => {
+router.get('/:email/export', async (req, res) => {
   try {
     const { email } = req.params;
-    const tree = db.prepare('SELECT * FROM trees WHERE email = ?').get(email);
+    const treeRes = await db.query('SELECT * FROM trees WHERE email = $1', [email]);
+    const tree = treeRes.rows[0];
     if (!tree) return res.status(404).json({ error: 'Données introuvables.' });
 
     const nodes = JSON.parse(tree.nodes);
@@ -130,8 +141,10 @@ router.get('/:email/export', (req, res) => {
 router.post('/:email/certificate', async (req, res) => {
   try {
     const { email } = req.params;
-    const tree = db.prepare('SELECT * FROM trees WHERE email = ?').get(email);
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const treeRes = await db.query('SELECT * FROM trees WHERE email = $1', [email]);
+    const tree = treeRes.rows[0];
+    const userRes = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
     if (!tree || !user) return res.status(404).json({ error: 'Données introuvables.' });
 
     const nodes = JSON.parse(tree.nodes);
@@ -143,7 +156,7 @@ router.post('/:email/certificate', async (req, res) => {
     const { v4: uuid } = await import('uuid');
     const certId = uuid();
     const now = new Date().toISOString();
-    db.prepare('INSERT INTO certificates (id, email, issued_at) VALUES (?, ?, ?)').run(certId, email, now);
+    await db.query('INSERT INTO certificates (id, email, issued_at) VALUES ($1, $2, $3)', [certId, email, now]);
 
     res.json({
       certificateId: certId,

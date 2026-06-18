@@ -26,7 +26,7 @@ function userResponse(user) {
 }
 
 // POST /api/auth/register
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password)
@@ -34,12 +34,13 @@ router.post('/register', (req, res) => {
     if (password.length < 4)
       return res.status(400).json({ error: 'Le mot de passe doit contenir au moins 4 caractères.' });
 
-    const existing = db.prepare('SELECT email FROM users WHERE email = ?').get(email);
+    const existingRes = await db.query('SELECT email FROM users WHERE email = $1', [email]);
+    const existing = existingRes.rows[0];
     if (existing) return res.status(409).json({ error: 'Un compte existe déjà avec cet email.' });
 
     const hashed = hashPassword(password);
-    db.prepare('INSERT INTO users (email, name, password) VALUES (?, ?, ?)').run(email, name, hashed);
-    db.prepare('INSERT INTO trees (email, xp, nodes, edges) VALUES (?, 0, ?, ?)').run(email, '[]', '[]');
+    await db.query('INSERT INTO users (email, name, password) VALUES ($1, $2, $3)', [email, name, hashed]);
+    await db.query('INSERT INTO trees (email, xp, nodes, edges) VALUES ($1, 0, $2, $3)', [email, '[]', '[]']);
 
     res.status(201).json({ user: userResponse({ email, name, dark_mode: 0, streak_count: 0, tutorial_done: 0 }), message: 'Compte créé avec succès.' });
   } catch (err) {
@@ -49,25 +50,28 @@ router.post('/register', (req, res) => {
 });
 
 // POST /api/auth/login
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis.' });
 
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const userRes = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+    const user = userRes.rows[0];
     if (!user) return res.status(401).json({ error: 'Aucun compte trouvé avec cet email.' });
     if (!comparePassword(password, user.password)) return res.status(401).json({ error: 'Mot de passe incorrect.' });
 
-    const tree = db.prepare('SELECT * FROM trees WHERE email = ?').get(email);
+    const treeRes = await db.query('SELECT * FROM trees WHERE email = $1', [email]);
+    const tree = treeRes.rows[0];
     const treeData = tree ? { xp: tree.xp, nodes: JSON.parse(tree.nodes), edges: JSON.parse(tree.edges) } : { xp: 0, nodes: [], edges: [] };
 
     // Track activity for streaks
     const today = new Date().toISOString().slice(0, 10);
-    const alreadyLogged = db.prepare('SELECT id FROM activity_log WHERE email = ? AND date = ?').get(email, today);
+    const alreadyLoggedRes = await db.query('SELECT id FROM activity_log WHERE email = $1 AND date = $2', [email, today]);
+    const alreadyLogged = alreadyLoggedRes.rows[0];
     if (!alreadyLogged) {
-      db.prepare('INSERT INTO activity_log (email, date, action) VALUES (?, ?, ?)').run(email, today, 'login');
+      await db.query('INSERT INTO activity_log (email, date, action) VALUES ($1, $2, $3)', [email, today, 'login']);
     }
-    updateStreak(email);
+    await updateStreak(email);
 
     res.json({ user: userResponse(user), tree: treeData });
   } catch (err) {
@@ -76,19 +80,27 @@ router.post('/login', (req, res) => {
   }
 });
 
-function updateStreak(email) {
+async function updateStreak(email) {
   const today = new Date().toISOString().slice(0, 10);
   const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  const userRes = await db.query('SELECT * FROM users WHERE email = $1', [email]);
+  const user = userRes.rows[0];
   if (!user) return;
 
-  if (user.last_active === today) return; // already counted today
+  let lastActiveStr = null;
+  if (user.last_active) {
+    lastActiveStr = user.last_active instanceof Date 
+      ? user.last_active.toISOString().slice(0, 10) 
+      : String(user.last_active).slice(0, 10);
+  }
+
+  if (lastActiveStr === today) return; // already counted today
 
   let newStreak = 1;
-  if (user.last_active === yesterday) {
+  if (lastActiveStr === yesterday) {
     newStreak = (user.streak_count || 0) + 1;
   }
-  db.prepare('UPDATE users SET streak_count = ?, last_active = ? WHERE email = ?').run(newStreak, today, email);
+  await db.query('UPDATE users SET streak_count = $1, last_active = $2 WHERE email = $3', [newStreak, today, email]);
 }
 
 export default router;

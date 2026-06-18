@@ -1,63 +1,74 @@
-import Database from 'better-sqlite3';
+import pg from 'pg';
+import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const dbPath = join(__dirname, '..', 'synapse.db');
-const db = new Database(dbPath);
+dotenv.config({ path: join(__dirname, '..', '.env') });
 
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const connectionString = process.env.DATABASE_URL;
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    email       TEXT PRIMARY KEY,
-    name        TEXT NOT NULL,
-    password    TEXT NOT NULL,
-    dark_mode   INTEGER DEFAULT 0,
-    streak_count INTEGER DEFAULT 0,
-    last_active DATE DEFAULT NULL,
-    tutorial_done INTEGER DEFAULT 0,
-    created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
-  );
-
-  CREATE TABLE IF NOT EXISTS trees (
-    email      TEXT PRIMARY KEY,
-    xp         INTEGER DEFAULT 0,
-    nodes      TEXT DEFAULT '[]',
-    edges      TEXT DEFAULT '[]',
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
-  );
-
-  CREATE TABLE IF NOT EXISTS activity_log (
-    id        INTEGER PRIMARY KEY AUTOINCREMENT,
-    email     TEXT NOT NULL,
-    date      DATE NOT NULL,
-    action    TEXT NOT NULL DEFAULT 'visit',
-    FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
-  );
-
-  CREATE TABLE IF NOT EXISTS certificates (
-    id        TEXT PRIMARY KEY,
-    email     TEXT NOT NULL,
-    issued_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
-  );
-
-  CREATE INDEX IF NOT EXISTS idx_activity_email ON activity_log(email);
-  CREATE INDEX IF NOT EXISTS idx_activity_date ON activity_log(date);
-`);
-
-// Add missing columns safely
-function addCol(table, col, def) {
-  try { db.exec(`ALTER TABLE ${table} ADD COLUMN ${col} ${def}`); } catch {}
+if (!connectionString) {
+  console.warn("ATTENTION : DATABASE_URL n'est pas définie dans l'environnement. Le serveur Express peut échouer à se connecter.");
 }
-addCol('users', 'dark_mode', 'INTEGER DEFAULT 0');
-addCol('users', 'streak_count', 'INTEGER DEFAULT 0');
-addCol('users', 'last_active', 'DATE DEFAULT NULL');
-addCol('users', 'tutorial_done', 'INTEGER DEFAULT 0');
 
-export default db;
+const pool = new pg.Pool({
+  connectionString: connectionString,
+  ssl: connectionString && !connectionString.includes('localhost') && !connectionString.includes('127.0.0.1')
+    ? { rejectUnauthorized: false }
+    : false
+});
+
+// Initialisation des tables au format PostgreSQL
+const initDb = async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        email         VARCHAR(255) PRIMARY KEY,
+        name          VARCHAR(255) NOT NULL,
+        password      VARCHAR(255) NOT NULL,
+        dark_mode     INTEGER DEFAULT 0,
+        streak_count  INTEGER DEFAULT 0,
+        last_active   DATE DEFAULT NULL,
+        tutorial_done INTEGER DEFAULT 0,
+        created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS trees (
+        email       VARCHAR(255) PRIMARY KEY,
+        xp          INTEGER DEFAULT 0,
+        nodes       TEXT DEFAULT '[]',
+        edges       TEXT DEFAULT '[]',
+        updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_trees_users FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS activity_log (
+        id      SERIAL PRIMARY KEY,
+        email   VARCHAR(255) NOT NULL,
+        date    DATE NOT NULL,
+        action  VARCHAR(50) NOT NULL DEFAULT 'visit',
+        CONSTRAINT fk_activity_log_users FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
+      );
+
+      CREATE TABLE IF NOT EXISTS certificates (
+        id        VARCHAR(255) PRIMARY KEY,
+        email     VARCHAR(255) NOT NULL,
+        issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_certificates_users FOREIGN KEY (email) REFERENCES users(email) ON DELETE CASCADE
+      );
+
+      CREATE INDEX IF NOT EXISTS idx_activity_email ON activity_log(email);
+      CREATE INDEX IF NOT EXISTS idx_activity_date ON activity_log(date);
+    `);
+    console.log("Base de données PostgreSQL initialisée avec succès.");
+  } catch (err) {
+    console.error("Erreur lors de l'initialisation de PostgreSQL:", err);
+  }
+};
+
+initDb();
+
+export default pool;
