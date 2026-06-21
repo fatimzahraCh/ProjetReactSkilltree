@@ -3,7 +3,7 @@
 // Cette instance servira à communiquer avec ton futur backend
 const api = axios.create({
   // baseURL: 'http://localhost:5000/api', // Le port dépendra de ton futur backend
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api',
   headers: {
     'Content-Type': 'application/json',
   },
