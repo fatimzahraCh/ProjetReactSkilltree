@@ -21,11 +21,11 @@ export interface RegisterResponse {
 }
 
 export const loginApi = async (email: string, password: string) => {
-  const res = await api.post<LoginResponse>('/auth/login', { email, password });
+  const res = await api.post<LoginResponse>('api/auth/login', { email, password });
   return res.data;
 };
 
 export const registerApi = async (name: string, email: string, password: string) => {
-  const res = await api.post<RegisterResponse>('/auth/register', { name, email, password });
+  const res = await api.post<RegisterResponse>('api/auth/register', { name, email, password });
   return res.data;
 };
