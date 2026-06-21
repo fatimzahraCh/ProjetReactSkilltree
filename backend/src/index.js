@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 // 2. Configurez CORS pour autoriser uniquement votre frontend Vercel
 // Remplacez l'URL ci-dessous par l'URL réelle de votre projet Vercel
 app.use(cors({
-  origin: ['https://votre-projet-front.vercel.app', 'http://localhost:5173'],
+  origin: ['https://projet-react-skilltree.vercel.app', 'http://localhost:5173'],
   credentials: true
 }));
 
